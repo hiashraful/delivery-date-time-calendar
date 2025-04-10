@@ -1,0 +1,205 @@
+/* Admin Calendar Styles */
+.delivery-slots-admin {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.delivery-slots-admin h1{
+    font-size: 2em;
+    text-align: center;
+    font-weight: 600;
+    color: #333;
+}
+.calendar-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+#admin-delivery-calendar {
+    width: 100%;
+    background: white;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: #f5f5f5;
+    margin-bottom: 10px;
+}
+
+.calendar-header button {
+    background: #fff;
+    border: 1px solid #ddd;
+    color: #555;
+    padding: 5px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+.calendar-header button:hover {
+    background: #f0f0f0;
+}
+
+.calendar-header h2 {
+    margin: 0;
+    font-size: 1.2em;
+    color: #333;
+}
+
+.weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    background: #f8f8f8;
+    padding: 10px 0;
+    font-size: 0.85em;
+    color: #666;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    background: white;
+    gap: 1px;
+    background-color: #e5e5e5;
+}
+
+.calendar-day {
+    min-height: 100px;
+    background: white;
+    padding: 8px;
+    font-size: 0.9em;
+    color: #333;
+    border-right: 1px solid #e5e5e5;
+    border-bottom: 1px solid #e5e5e5;
+    position: relative;
+}
+
+.calendar-day.other-month {
+    color: #aaa;
+    background: #f9f9f9;
+}
+
+.calendar-day.selectable {
+    cursor: pointer;
+}
+
+.calendar-day.selectable:hover {
+    background-color: #f0f8ff;
+}
+
+.day-number {
+    font-size: 0.9em;
+    margin-bottom: 10px;
+    color: #666;
+}
+
+.time-slots {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.time-slots .time-slot {
+    font-size: 1.1em;
+    background: #ddd;
+    padding: 2px 5px;
+    border-radius: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 20px;
+    border-radius: 5px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: #000;
+}
+
+/* Time Slot Input Styles */
+.time-slot-input {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+.time-slot-input input {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.time-slot-input button {
+    background: #ff4444;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.time-slot-input button:hover {
+    background: #cc0000;
+}
+
+#timeSlotsContainer {
+    margin: 15px 0;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+#addNewSlotBtn {
+    margin-left: 10px;
+}
+
+#saveTimeSlotsBtn {
+    margin-top: 15px;
+    width: 100%;
+    padding: 10px;
+    background: #2271b1;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#saveTimeSlotsBtn:hover {
+    background: #135e96;
+}
