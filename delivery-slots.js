@@ -154,4 +154,5 @@ jQuery(document).ready(function($) {
     if ($('#delivery-calendar').length) {
       new DeliveryCalendar();
     }
+	
   });
