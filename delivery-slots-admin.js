@@ -75,7 +75,11 @@ jQuery(document).ready(function($) {
             for (let day = 1; day <= daysInMonth; day++) {
                 const date = new Date(year, month, day);
                 const slots = this.getSlotsForDate(date);
-                daysContainer.append(this.createDayElement(day, '', slots));
+                const dayEl = this.createDayElement(day, '', slots);
+                
+                // Add data attribute for easy selection later
+                dayEl.attr('data-date', this.formatDateForStorage(date));
+                daysContainer.append(dayEl);
             }
 
             // Next month days
@@ -86,16 +90,21 @@ jQuery(document).ready(function($) {
         }
 
         createDayElement(day, className = '', slots = []) {
-            const dayEl = $(`<div class="calendar-day ${className}"></div>`);
+            const dayEl = $(`<div class="calendar-day ${className} ${slots.length ? 'has-slots' : ''}"></div>`);
             dayEl.append(`<div class="day-number">${day}</div>`);
             
             if (!className.includes('other-month')) {
                 dayEl.addClass('selectable');
                 if (slots.length) {
-                    const slotsHtml = slots.map(slot => 
-                        `<div class="time-slot">${slot.start} - ${slot.end}</div>`
-                    ).join('');
-                    dayEl.append(`<div class="time-slots">${slotsHtml}</div>`);
+                    const slotsContainer = $('<div class="time-slots"></div>');
+                    
+                    slots.forEach(slot => {
+                        slotsContainer.append(`
+                            <div class="time-slot">${slot.start} - ${slot.end}</div>
+                        `);
+                    });
+                    
+                    dayEl.append(slotsContainer);
                 }
             }
             
@@ -177,7 +186,6 @@ jQuery(document).ready(function($) {
 
         saveTimeSlots() {
             const slots = [];
-            const calendar = this;
             
             this.timeSlotsContainer.find('.time-slot-input').each(function() {
                 slots.push({
@@ -201,29 +209,39 @@ jQuery(document).ready(function($) {
                         const dateStr = this.formatDateForStorage(this.currentSelectedDate);
                         deliverySlotsData.saved_slots[dateStr] = slots;
                         
-                        // Force re-render of the day element
-                        const dayElement = $(`.calendar-day:contains('${this.currentSelectedDate.getDate()}')`)
-                            .not('.other-month')
-                            .first();
+                        // Find the day element using the data-date attribute
+                        const dayElement = $(`.calendar-day[data-date="${dateStr}"]`);
                         
-                        dayElement.empty();
-                        dayElement.append(`<div class="day-number">${this.currentSelectedDate.getDate()}</div>`);
-                        
-                        if (slots.length > 0) {
-                            dayElement.addClass('has-slots');
-                            const slotsContainer = $('<div class="time-slots"></div>');
+                        if (dayElement.length) {
+                            // Clear existing content except day number
+                            const dayNumber = dayElement.find('.day-number').detach();
+                            dayElement.empty().append(dayNumber);
                             
-                            slots.forEach(slot => {
-                                slotsContainer.append(`
-                                    <div class="time-slot">
-                                        ${slot.start} - ${slot.end}
-                                    </div>
-                                `);
-                            });
+                            // Update slots display
+                            if (slots.length > 0) {
+                                dayElement.addClass('has-slots');
+                                const slotsContainer = $('<div class="time-slots"></div>');
+                                
+                                slots.forEach(slot => {
+                                    slotsContainer.append(`
+                                        <div class="time-slot">
+                                            ${slot.start} - ${slot.end}
+                                        </div>
+                                    `);
+                                });
+                                
+                                dayElement.append(slotsContainer);
+                            } else {
+                                dayElement.removeClass('has-slots');
+                            }
                             
-                            dayElement.append(slotsContainer);
+                            // Visual feedback - briefly highlight the updated day
+                            dayElement.css('background-color', '#fcebcc');
+                            setTimeout(() => {
+                                dayElement.css('background-color', '');
+                            }, 1000);
                         } else {
-                            dayElement.removeClass('has-slots');
+                            console.error('Could not find calendar day element for date:', dateStr);
                         }
                         
                         this.modal.hide();
@@ -233,32 +251,32 @@ jQuery(document).ready(function($) {
         }
         
         updateCalendarDay(date, slots) {
-            const day = date.getDate();
-            const month = date.getMonth();
-            const year = date.getFullYear();
+            const dateStr = this.formatDateForStorage(date);
+            const dayElement = $(`.calendar-day[data-date="${dateStr}"]`);
             
-            // Find the correct day element
-            $('.calendar-day').each(function() {
-                const dayNum = $(this).find('.day-number').text();
-                if (dayNum == day && !$(this).hasClass('other-month')) {
-                    const slotsContainer = $(this).find('.time-slots');
-                    slotsContainer.empty();
+            if (dayElement.length) {
+                // Clear existing content except day number
+                const dayNumber = dayElement.find('.day-number').detach();
+                dayElement.empty().append(dayNumber);
+                
+                // Update slots display
+                if (slots && slots.length > 0) {
+                    dayElement.addClass('has-slots');
+                    const slotsContainer = $('<div class="time-slots"></div>');
                     
-                    if (slots && slots.length > 0) {
-                        $(this).addClass('has-slots');
-                        
-                        slots.forEach(slot => {
-                            slotsContainer.append(`
-                                <div class="time-slot">
-                                    ${slot.start} - ${slot.end}
-                                </div>
-                            `);
-                        });
-                    } else {
-                        $(this).removeClass('has-slots');
-                    }
+                    slots.forEach(slot => {
+                        slotsContainer.append(`
+                            <div class="time-slot">
+                                ${slot.start} - ${slot.end}
+                            </div>
+                        `);
+                    });
+                    
+                    dayElement.append(slotsContainer);
+                } else {
+                    dayElement.removeClass('has-slots');
                 }
-            });
+            }
         }
     }
     
